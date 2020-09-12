@@ -1,0 +1,6 @@
+---
+#uninstall k3s from hosts
+
+- hosts: all
+  roles:
+    - uninstall

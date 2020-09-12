@@ -1,0 +1,6 @@
+---
+# uninstall tasks
+
+- name: run k3s uninstall script
+  shell: 
+    cmd: /usr/local/bin/k3s-uninstall.sh
