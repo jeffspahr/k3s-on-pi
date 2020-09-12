@@ -66,9 +66,11 @@ Note: This is a pain on macOS since it doesn't support ext3/4 natively.  I ended
 
 ## Run Prereqs
 First Run:
+
 `ansible-playbook -bk -i inventory/k3s -u ubuntu playbooks/setup.yaml`
 
 You can run as your user after the first run:
+
 `ansible-playbook -b -i inventory/k3s playbooks/setup.yaml`
 
 ## Install k3s using k3sup
