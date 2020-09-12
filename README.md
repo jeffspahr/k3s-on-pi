@@ -73,4 +73,17 @@ You can run as your user after the first run:
 
 ## Install k3s using k3sup
 
+https://github.com/alexellis/k3sup
+
+```
+k3sup install --cluster --user jspahr --ip 192.168.2.201
+k3sup join --server --ip 192.168.2.202 --user jspahr --server-user jspahr --server-ip 192.168.2.201
+k3sup join --server --ip 192.168.2.203 --user jspahr --server-user jspahr --server-ip 192.168.2.201
+```
+
+`export KUBECONFIG=~/k8s/kubeconfig`
+
+`kubectl get nodes -o wide`
+
 ## Uninstall k3s
+`ansible-playbook -b -i inventory/k3s playbooks/uninstall.yaml`
