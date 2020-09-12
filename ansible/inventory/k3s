@@ -1,0 +1,4 @@
+[k3s-nodes]
+k3s-01a.spahr.dev
+k3s-01b.spahr.dev
+k3s-01c.spahr.dev

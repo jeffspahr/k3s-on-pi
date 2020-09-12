@@ -1,0 +1,7 @@
+---
+#setup hosts and install k3s
+
+- hosts: all
+  serial: 1
+  roles:
+    - common
