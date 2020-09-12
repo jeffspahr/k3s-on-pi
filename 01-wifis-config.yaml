@@ -1,0 +1,8 @@
+network:
+  wifis:
+    wlan0: 
+      access-points:
+        "your-access-point-name":
+          password: "this-is-a-secret"
+      dhcp4: true
+  version: 2
