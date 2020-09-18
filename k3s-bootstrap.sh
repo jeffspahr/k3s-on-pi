@@ -41,7 +41,5 @@ k3sup join \
   --server-ip $NODE_1 \
   --k3s-version $K8SVERSION
 
-sleep 2
-
 echo "Set your KUBECONFIG"
 echo "export KUBECONFIG=`pwd`/kubeconfig"
