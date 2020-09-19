@@ -79,13 +79,9 @@ You can run as your user after the first run:
 
 https://github.com/alexellis/k3sup
 
-```
-k3sup install --cluster --user jspahr --ip 192.168.2.201
-k3sup join --server --ip 192.168.2.202 --user jspahr --server-user jspahr --server-ip 192.168.2.201
-k3sup join --server --ip 192.168.2.203 --user jspahr --server-user jspahr --server-ip 192.168.2.201
-```
+Run [k3s-bootstrap.sh](k3s-bootstrap.sh)
 
-`export KUBECONFIG=~/k8s/kubeconfig`
+`export KUBECONFIG=./kubeconfig`
 
 `kubectl get nodes -o wide`
 
