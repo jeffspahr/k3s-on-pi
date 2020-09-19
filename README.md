@@ -81,7 +81,7 @@ https://github.com/alexellis/k3sup
 
 Run [k3s-bootstrap.sh](k3s-bootstrap.sh)
 
-`export KUBECONFIG=./kubeconfig`
+`echo "export KUBECONFIG=`pwd`/kubeconfig"`
 
 `kubectl get nodes -o wide`
 
