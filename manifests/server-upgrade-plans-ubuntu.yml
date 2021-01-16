@@ -1,0 +1,46 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: update-ubuntu
+  namespace: system-upgrade
+type: Opaque
+stringData:
+  upgrade.sh: |
+    #!/bin/sh
+    set -e
+    secrets=$(dirname $0)
+    apt-get --assume-yes update
+    apt-get --assume-yes upgrade
+    if [ -f /run/reboot-required ]; then
+      cat /run/reboot-required
+      reboot
+    fi
+---
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: update-ubuntu
+  namespace: system-upgrade
+spec:
+  concurrency: 1
+  #nodeSelector:
+  #  matchExpressions:
+  #    - {key: plan.upgrade.cattle.io/bionic, operator: Exists}
+  nodeSelector:
+    matchExpressions:
+    - key: node-role.kubernetes.io/master
+      operator: In
+      values:
+      - "true"
+  serviceAccountName: system-upgrade
+  secrets:
+    - name: update-ubuntu
+      path: /host/run/system-upgrade/secrets/update-ubuntu
+  drain:
+    force: true
+  version: "20.04"
+  upgrade:
+    image: ubuntu
+    command: ["chroot", "/host"]
+    args: ["sh", "/run/system-upgrade/secrets/update-ubuntu/upgrade.sh"]
