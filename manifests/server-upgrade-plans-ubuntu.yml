@@ -6,6 +6,7 @@ metadata:
   namespace: system-upgrade
 type: Opaque
 stringData:
+  version: 0.1.0
   upgrade.sh: |
     #!/bin/sh
     set -e
