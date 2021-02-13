@@ -1,0 +1,16 @@
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: examplednsrecord
+  annotations:
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+spec:
+  endpoints:
+  - dnsName: foo.spahr.dev
+    recordTTL: 180
+    recordType: A
+    targets:
+    - 8.8.8.8
+#    providerSpecific:
+#    - name: external-dns.alpha.kubernetes.io/cloudflare-proxied
+#      value: "true"

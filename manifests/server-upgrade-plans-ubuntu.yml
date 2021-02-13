@@ -6,13 +6,14 @@ metadata:
   namespace: system-upgrade
 type: Opaque
 stringData:
-  version: 0.1.0
+  version: 0.1.1
   upgrade.sh: |
     #!/bin/sh
     set -e
     secrets=$(dirname $0)
-    apt-get --assume-yes update
-    apt-get --assume-yes upgrade
+    apt -y update
+    apt -y install rpi-eeprom
+    apt -y full-upgrade
     if [ -f /run/reboot-required ]; then
       cat /run/reboot-required
       reboot

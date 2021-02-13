@@ -23,6 +23,12 @@ rules:
 - apiGroups: [""]
   resources: ["nodes"]
   verbs: ["list", "watch"]
+- apiGroups: ["externaldns.k8s.io"]
+  resources: ["dnsendpoints"]
+  verbs: ["get","watch","list"]
+- apiGroups: ["externaldns.k8s.io"]
+  resources: ["dnsendpoints/status"]
+  verbs: ["*"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
@@ -60,8 +66,13 @@ spec:
         args:
         - --source=ingress
         - --source=service
+        - --source=crd
         - --domain-filter=spahr.dev # (optional) limit to only example.com domains; change to match the zone created above.
         - --provider=cloudflare
+        - --log-level=debug
+        - --interval=5s
+        - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
+        - --crd-source-kind=DNSEndpoint
         env:
         - name: CF_API_TOKEN
           valueFrom:
