@@ -1,0 +1,23 @@
+---
+# install filebeat via apt
+
+
+- name: Add an Apt signing key, uses whichever key is at the URL
+  ansible.builtin.apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add specified repository into sources list
+  ansible.builtin.apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+    state: present
+
+- name: Update repositories cache and install filebeat package
+  apt:
+    name: filebeat
+    update_cache: yes
+
+- name: Enable service filebeat
+  ansible.builtin.systemd:
+    name: filebeat
+    enabled: yes
