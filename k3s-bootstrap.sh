@@ -4,7 +4,7 @@
 
 set -e
 
-export K8SVERSION=v1.20.4+k3s1
+export K8SVERSION=v1.20.5+k3s1
 
 export NODE_1="$(dig +short k3s-01a.spahr.dev)"
 export NODE_2="$(dig +short k3s-01b.spahr.dev)"
