@@ -68,7 +68,7 @@ Note: This is a pain on macOS since it doesn't support ext3/4 natively.  I ended
 
 ## Run Prereqs
 
-https://github.com/jeffspahr/k3s-on-pi/blob/main/ansible/roles/common/tasks/main.yml
+[Ansible Role](ansible/roles/common/tasks/main.yml)
 
 First Run:
 
