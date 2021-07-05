@@ -67,6 +67,9 @@ Note: This is a pain on macOS since it doesn't support ext3/4 natively.  I ended
 `chmod 755 /sd-root-filesystem/etc/init.d/netplan-apply.sh`
 
 ## Run Prereqs
+
+[Ansible Role](ansible/roles/common/tasks/main.yml)
+
 First Run:
 
 `ansible-playbook -bk -i inventory/k3s -u ubuntu playbooks/setup.yaml`
