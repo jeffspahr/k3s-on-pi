@@ -69,7 +69,7 @@ spec:
         - --source=crd
         - --domain-filter=spahr.dev # (optional) limit to only example.com domains; change to match the zone created above.
         - --provider=cloudflare
-        - --log-level=debug
+        - --log-level=info
         - --interval=5s
         - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
         - --crd-source-kind=DNSEndpoint
