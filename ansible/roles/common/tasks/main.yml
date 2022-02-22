@@ -22,6 +22,24 @@
     key: https://github.com/jeffspahr.keys
     state: present
 
+# this will force the subsequent meta command to reset the connection as the defined user.
+# you'll need to ensure your ssh private key is in place for this to work.
+# consider adding a conditional to only run the set_fact and meta tasks if ansible_user == ubuntu (is this possible?)
+- name: (meta) set ansible user to newly created user
+  set_fact:
+    ansible_user: jspahr
+
+- name: (meta) reset connection
+  meta: reset_connection
+
+- name: delete ubuntu user
+  become: yes
+  user:
+    name: ubuntu
+    state: absent
+    remove: yes
+    force: yes
+
 #From https://github.com/rancher/k3s-ansible/blob/master/roles/ubuntu/tasks/main.yml. Thank you!
 - name: Enable cgroup via boot commandline if not already enabled for Ubuntu on ARM
   lineinfile:
