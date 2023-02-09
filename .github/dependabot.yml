@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+  # Maintain dependencies for Docker, K8s Manifests, and Helm
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
