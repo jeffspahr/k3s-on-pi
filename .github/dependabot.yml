@@ -2,6 +2,6 @@ version: 2
 updates:
   # Maintain dependencies for Docker, K8s Manifests, and Helm
   - package-ecosystem: "docker"
-    directory: "/"
+    directory: "/manifests"
     schedule:
       interval: "daily"
