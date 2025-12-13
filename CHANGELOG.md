@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-12-13
+
 ### Added
 - Security scanning to GitHub Actions workflow
   - Trivy for Kubernetes manifest security analysis
@@ -66,7 +68,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - System upgrade controller for automated k3s and OS updates
 - Dependabot configuration for automated dependency updates
 
-[Unreleased]: https://github.com/jeffspahr/k3s-on-pi/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/jeffspahr/k3s-on-pi/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/jeffspahr/k3s-on-pi/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/jeffspahr/k3s-on-pi/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/jeffspahr/k3s-on-pi/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/jeffspahr/k3s-on-pi/releases/tag/v1.0.0
