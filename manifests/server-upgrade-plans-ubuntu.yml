@@ -41,7 +41,7 @@ spec:
       path: /host/run/system-upgrade/secrets/update-ubuntu
   drain:
     force: true
-  version: "20.04"
+  version: "24.04"
   upgrade:
     image: ubuntu
     command: ["chroot", "/host"]

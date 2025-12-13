@@ -7,7 +7,7 @@ Get a 3 node HA k3s cluster up and running on a set of Raspberry Pis
 * 3 [Samsung 256GB EVO Plus SD Card](https://www.amazon.com/gp/product/B06XFS5657)
 
 ## Image
-* Download the [Ubuntu 20.04.1 LTS 64 bit](https://ubuntu.com/download/raspberry-pi)
+* Download the [Ubuntu 24.04 LTS 64 bit](https://ubuntu.com/download/raspberry-pi)
 * Follow https://ubuntu.com/tutorials/create-an-ubuntu-image-for-a-raspberry-pi-on-macos#2-on-your-macos-machine
 
 **WARNING - Be sure to pick the correct device.  This activity is destructive.**
@@ -46,7 +46,7 @@ Unmount of all volumes on disk2 was successful
 ```
 
 ```
-sudo sh -c 'gunzip -c ~/Downloads/ubuntu-20.04.1-preinstalled-server-arm64+raspi.img.xz | sudo dd of=/dev/disk2 bs=32m'
+sudo sh -c 'gunzip -c ~/Downloads/ubuntu-24.04-preinstalled-server-arm64+raspi.img.xz | sudo dd of=/dev/disk2 bs=32m'
 ```
 
 ## Networking
