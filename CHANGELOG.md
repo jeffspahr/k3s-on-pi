@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- GitHub issue templates
+  - Bug report template with environment and component tracking
+  - Feature request template with problem/solution format
+  - Template configuration linking to discussions
+- Pull request template
+  - Type of change selection
+  - Component tracking checklist
+  - Testing requirements (local, validation, security, ARM64)
+  - Documentation and CHANGELOG update reminders
+
 ## [1.3.0] - 2025-12-13
 
 ### Added
