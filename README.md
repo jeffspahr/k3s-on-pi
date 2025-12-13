@@ -1,4 +1,7 @@
 # k3s-on-pi
+
+[![Validate Manifests](https://github.com/jeffspahr/k3s-on-pi/actions/workflows/validate-manifests.yml/badge.svg)](https://github.com/jeffspahr/k3s-on-pi/actions/workflows/validate-manifests.yml)
+
 ## Goal
 Get a 3 node HA k3s cluster up and running on a set of Raspberry Pis
 
