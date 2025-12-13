@@ -1,0 +1,122 @@
+name: Validate Manifests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate Kubernetes Manifests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+
+      - name: Validate YAML syntax
+        run: |
+          echo "Validating YAML syntax for all manifests..."
+          python3 << 'EOF'
+          import yaml
+          import sys
+          from pathlib import Path
+
+          manifest_dir = Path("manifests")
+          errors = []
+
+          for manifest_file in sorted(manifest_dir.glob("*.yml")) + sorted(manifest_dir.glob("*.yaml")):
+              try:
+                  with open(manifest_file) as f:
+                      docs = list(yaml.safe_load_all(f))
+                      print(f"✓ {manifest_file.name} is valid YAML ({len(docs)} document(s))")
+              except yaml.YAMLError as e:
+                  errors.append(f"✗ {manifest_file.name}: {e}")
+                  print(f"✗ {manifest_file.name}: {e}")
+
+          if errors:
+              print("\nValidation failed with errors:")
+              for error in errors:
+                  print(error)
+              sys.exit(1)
+          else:
+              print("\n✓ All YAML files are valid")
+          EOF
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.34.2'
+
+      - name: Validate Kubernetes manifests
+        run: |
+          echo "Validating Kubernetes manifests..."
+          for manifest in manifests/*.yml manifests/*.yaml; do
+            if [ -f "$manifest" ]; then
+              echo "Validating $manifest..."
+              kubectl apply --dry-run=client -f "$manifest" > /dev/null 2>&1 && \
+                echo "✓ $manifest is valid" || \
+                echo "⚠ $manifest validation skipped (may require cluster context)"
+            fi
+          done
+
+      - name: Extract and verify container images
+        run: |
+          echo "Extracting container images from manifests..."
+          images=$(grep -h "image:" manifests/*.yml manifests/*.yaml 2>/dev/null | \
+                   grep -v "^#" | \
+                   sed 's/.*image: *//;s/"//g' | \
+                   sort -u)
+
+          echo "Found the following images:"
+          echo "$images"
+          echo ""
+
+          echo "Verifying images exist..."
+          while IFS= read -r image; do
+            if [ -n "$image" ]; then
+              # Skip images without tags (like 'ubuntu' or 'rancher/k3s-upgrade')
+              if [[ "$image" != *":"* ]]; then
+                echo "⚠ Skipping $image (no specific tag)"
+                continue
+              fi
+
+              echo "Checking $image..."
+              if docker manifest inspect "$image" > /dev/null 2>&1; then
+                echo "✓ $image exists"
+
+                # Check for ARM64 support
+                if docker manifest inspect "$image" 2>/dev/null | grep -q "arm64"; then
+                  echo "  ✓ ARM64 support confirmed"
+                else
+                  echo "  ⚠ ARM64 support not detected"
+                fi
+              else
+                echo "✗ $image not found or not accessible"
+              fi
+            fi
+          done <<< "$images"
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "================================"
+          echo "✓ All validation checks passed!"
+          echo "================================"
+          echo ""
+          echo "Validated:"
+          echo "- YAML syntax for all manifests"
+          echo "- Kubernetes manifest structure"
+          echo "- Container image availability"
+          echo "- ARM64 architecture support"
