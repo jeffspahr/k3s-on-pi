@@ -91,5 +91,151 @@ Run [k3s-bootstrap.sh](k3s-bootstrap.sh)
 
 `kubectl get nodes -o wide`
 
+## Deployment Guide
+
+Once your k3s cluster is up and running, deploy the cluster components in the following order:
+
+### Prerequisites
+
+Ensure you have:
+- k3s cluster running (see above)
+- `kubectl` configured with cluster access
+- `KUBECONFIG` environment variable set
+
+### 1. Deploy System Upgrade Controller
+
+The system upgrade controller enables automated upgrades for k3s and Ubuntu.
+
+```bash
+kubectl apply -f manifests/system-upgrade-controller.yaml
+```
+
+Verify deployment:
+```bash
+kubectl get pods -n system-upgrade
+```
+
+### 2. Deploy cert-manager
+
+cert-manager automates certificate management for the cluster.
+
+```bash
+# Apply CRDs first
+kubectl apply -f manifests/cert-manager.crds.yml
+
+# Wait for CRDs to be established
+kubectl wait --for condition=established --timeout=60s crd/certificates.cert-manager.io
+
+# Deploy cert-manager
+kubectl apply -f manifests/cert-manager.yml
+```
+
+Verify deployment:
+```bash
+kubectl get pods -n cert-manager
+```
+
+Configure the certificate issuer (requires Cloudflare API token):
+```bash
+# Create Cloudflare API token secret first
+kubectl create secret generic cloudflare-api-token \
+  --from-literal=api-token=YOUR_CLOUDFLARE_API_TOKEN \
+  -n cert-manager
+
+# Apply the issuer
+kubectl apply -f manifests/cert-manager-issuer.yml
+```
+
+### 3. Deploy external-dns
+
+external-dns automatically manages DNS records in Cloudflare.
+
+```bash
+# Create Cloudflare API token secret (if not already created)
+kubectl create secret generic cloudflare-api-token \
+  --from-literal=api-token=YOUR_CLOUDFLARE_API_TOKEN \
+  -n external-dns
+
+# Deploy DNSEndpoint CRD
+kubectl apply -f manifests/dnsendpoint-crd.yml
+
+# Deploy external-dns
+kubectl apply -f manifests/external-dns.yml
+```
+
+Verify deployment:
+```bash
+kubectl get pods -n external-dns
+```
+
+### 4. Configure Traefik (optional)
+
+If you need custom Traefik configuration:
+
+```bash
+kubectl apply -f manifests/traefik.yml
+```
+
+### 5. Configure Upgrade Plans (optional)
+
+To enable automated k3s and Ubuntu upgrades:
+
+```bash
+# Apply k3s upgrade plan
+kubectl apply -f manifests/server-upgrade-plans-k3s.yml
+
+# Apply Ubuntu upgrade plan
+kubectl apply -f manifests/server-upgrade-plans-ubuntu.yml
+```
+
+Check upgrade plan status:
+```bash
+kubectl get plans -n system-upgrade
+```
+
+### Verification
+
+Verify all components are running:
+
+```bash
+# Check all namespaces
+kubectl get pods --all-namespaces
+
+# Check cert-manager
+kubectl get certificateissuers --all-namespaces
+
+# Check external-dns logs
+kubectl logs -n external-dns -l app=external-dns
+
+# Check system upgrade controller
+kubectl get jobs -n system-upgrade
+```
+
+### Post-Deployment
+
+1. **Update DNS domain filter**: Edit `manifests/external-dns.yml` and update the `--domain-filter` argument to match your domain
+2. **Configure certificates**: Create Certificate resources for your ingresses
+3. **Monitor upgrades**: Watch the system-upgrade namespace for upgrade jobs
+
+### Troubleshooting
+
+**cert-manager not ready:**
+```bash
+kubectl describe pods -n cert-manager
+kubectl logs -n cert-manager -l app.kubernetes.io/component=controller
+```
+
+**external-dns not creating records:**
+```bash
+kubectl logs -n external-dns -l app=external-dns
+# Check Cloudflare API token is valid
+```
+
+**Upgrades not running:**
+```bash
+kubectl get plans -n system-upgrade -o yaml
+kubectl describe plan -n system-upgrade
+```
+
 ## Uninstall k3s
 `ansible-playbook -b -i inventory/k3s playbooks/uninstall.yaml`
