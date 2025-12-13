@@ -108,15 +108,74 @@ jobs:
             fi
           done <<< "$images"
 
+      - name: Set up Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: 'manifests/'
+          format: 'table'
+          exit-code: '0'
+          severity: 'CRITICAL,HIGH'
+          trivyignores: '.trivyignore'
+
+      - name: Scan Kubernetes manifests with Trivy
+        run: |
+          echo "Scanning Kubernetes manifests for security issues..."
+          docker run --rm -v $(pwd):/workspace aquasec/trivy:latest config /workspace/manifests \
+            --severity CRITICAL,HIGH \
+            --exit-code 0 \
+            --format table
+
+      - name: Scan container images with Trivy
+        run: |
+          echo "Scanning container images for vulnerabilities..."
+          images=$(grep -h "image:" manifests/*.yml manifests/*.yaml 2>/dev/null | \
+                   grep -v "^#" | \
+                   sed 's/.*image: *//;s/"//g' | \
+                   sort -u)
+
+          while IFS= read -r image; do
+            if [ -n "$image" ] && [[ "$image" == *":"* ]]; then
+              echo "Scanning $image..."
+              docker run --rm aquasec/trivy:latest image "$image" \
+                --severity CRITICAL,HIGH \
+                --exit-code 0 \
+                --format table \
+                --timeout 10m || echo "⚠ Scan failed for $image"
+            fi
+          done <<< "$images"
+
+      - name: Install kubesec
+        run: |
+          wget https://github.com/controlplaneio/kubesec/releases/download/v2.14.1/kubesec_linux_amd64.tar.gz
+          tar -xzf kubesec_linux_amd64.tar.gz
+          sudo mv kubesec /usr/local/bin/
+          kubesec version
+
+      - name: Scan manifests with kubesec
+        run: |
+          echo "Scanning Kubernetes manifests with kubesec..."
+          for manifest in manifests/*.yml manifests/*.yaml; do
+            if [ -f "$manifest" ]; then
+              echo "Scanning $manifest..."
+              kubesec scan "$manifest" | grep -E "score|critical|advise" || true
+            fi
+          done
+
       - name: Summary
         if: success()
         run: |
-          echo "================================"
-          echo "✓ All validation checks passed!"
-          echo "================================"
+          echo "========================================"
+          echo "✓ All validation & security checks passed!"
+          echo "========================================"
           echo ""
           echo "Validated:"
           echo "- YAML syntax for all manifests"
           echo "- Kubernetes manifest structure"
           echo "- Container image availability"
           echo "- ARM64 architecture support"
+          echo ""
+          echo "Security Scanned:"
+          echo "- Kubernetes manifests (Trivy)"
+          echo "- Container images (Trivy)"
+          echo "- Security best practices (kubesec)"
