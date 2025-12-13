@@ -108,16 +108,6 @@ jobs:
             fi
           done <<< "$images"
 
-      - name: Set up Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'config'
-          scan-ref: 'manifests/'
-          format: 'table'
-          exit-code: '0'
-          severity: 'CRITICAL,HIGH'
-          trivyignores: '.trivyignore'
-
       - name: Scan Kubernetes manifests with Trivy
         run: |
           echo "Scanning Kubernetes manifests for security issues..."
