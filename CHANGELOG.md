@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Security scanning to GitHub Actions workflow
+  - Trivy for Kubernetes manifest security analysis
+  - Trivy for container image vulnerability scanning (CRITICAL and HIGH severity)
+  - kubesec for Kubernetes security best practices validation
+  - Automated security checks on every push and pull request
+
 ## [1.2.0] - 2025-12-13
 
 ### Added
