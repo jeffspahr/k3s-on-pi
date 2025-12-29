@@ -5,6 +5,8 @@
 ## Goal
 Get a 3 node HA k3s cluster up and running on a set of Raspberry Pis
 
+📊 **[View Architecture Diagrams](ARCHITECTURE.md)** - System architecture, component interactions, and deployment workflow
+
 ## Equipment
 * 3 [Raspberry Pi 4 Model B/8GB](https://www.raspberrypi.org/products/raspberry-pi-4-model-b/)
 * 3 [Samsung 256GB EVO Plus SD Card](https://www.amazon.com/gp/product/B06XFS5657)
